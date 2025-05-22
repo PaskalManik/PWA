@@ -20,7 +20,7 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request).catch(() => {
       return caches.match(event.request).then(response => {
-        return response || caches.match('/offline.html');
+        return response || caches.match('./offline.html');
       });
     })
   );
