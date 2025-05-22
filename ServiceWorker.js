@@ -1,15 +1,12 @@
-const CACHE_NAME = 'todo-cache-v1';
+const CACHE_NAME = "todolist-cache-v1";
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/offline.html', 
-  '/CSS/main.css',
-  '/JS/main.js',
-  '/JS/time.js',
-  '/assets/favicon.png',
-  'https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css'
+    "./",
+    "./index.html",
+    "./CSS/main.css",
+    "./JS/main.js",
+    "./JS/time.js",
+    "./assets/favicon.png",
+    "./offline.html"
 ];
 
 
