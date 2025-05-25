@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <link rel="manifest" href="manifest.json">
 
     <meta charset="UTF-8">
@@ -61,11 +62,11 @@
         </script>
 
         <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('ServiceWorker.js');
-            });
-        }
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('serviceWorker.js');
+                });
+            }
         </script>
 </body>
 

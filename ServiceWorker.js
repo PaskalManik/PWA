@@ -9,19 +9,24 @@ const urlsToCache = [
     "./offline.html"
 ];
 
-
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
     );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request).then(response => {
-        return response || caches.match('./offline.html');
-      });
-    })
-  );
+self.addEventListener("fetch", event => {
+    event.respondWith(
+        fetch(event.request)
+            .then(response => response)
+            .catch(() => {
+                return caches.match(event.request).then(response => {
+                    // Kalau file tidak ada di cache, fallback ke offline.html untuk dokumen HTML
+                    if (event.request.destination === 'document') {
+                        return caches.match("./offline.html");
+                    }
+                    return response;
+                });
+            })
+    );
 });
