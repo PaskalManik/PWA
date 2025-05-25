@@ -1,130 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="UTF-8">
-	<title>Offline</title>
-	<style>
-		body {
-			background-image: linear-gradient(100deg, #575656, #062e3f);
-			min-height: 100vh;
-			margin: 0;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: flex-start;
-			font-family: 'Segoe UI', Arial, sans-serif;
-		}
-
-		h1 {
-			margin-top: 60px;
-			color: white;
-			font-size: 2.2em;
-			letter-spacing: 1px;
-		}
-
-		h3 {
-			color: #fff;
-		}
-
-		p {
-			color: #333;
-			font-size: 1.1em;
-			font-weight: bold;
-		}
-
-		#game-area {
-			background: rgba(255, 255, 255, 0.95);
-			box-shadow: 0 8px 24px rgba(60, 60, 60, 0.12);
-			border-radius: 18px;
-			padding: 32px 28px 24px 28px;
-			margin-top: 30px;
-			display: inline-block;
-			min-width: 320px;
-		}
-
-		#game-area p {
-			margin: 12px 0;
-		}
-
-		input[type="number"] {
-			width: 60px;
-			padding: 8px;
-			border: 1.5px solid #43c6ac;
-			border-radius: 8px;
-			font-size: 1.1em;
-			margin-right: 10px;
-			outline: none;
-			transition: border 0.2s;
-		}
-
-		input[type="number"]:focus {
-			border: 1.5px solid #2e8b7a;
-			background: #f0fdfa;
-		}
-
-		button {
-			background: linear-gradient(90deg, #43c6ac 60%, #191654 100%);
-			color: #fff;
-			border: none;
-			border-radius: 8px;
-			padding: 8px 22px;
-			font-size: 1em;
-			cursor: pointer;
-			margin: 8px 4px 0 0;
-			box-shadow: 0 2px 8px rgba(67, 198, 172, 0.08);
-			transition: background 0.2s, transform 0.1s;
-		}
-
-		button:hover {
-			background: linear-gradient(90deg, #191654 60%, #43c6ac 100%);
-			transform: translateY(-2px) scale(1.04);
-		}
-
-		#result {
-			font-weight: bold;
-			font-size: 1.15em;
-			margin-top: 16px;
-			min-height: 24px;
-		}
-	</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>2048 Offline</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #faf8ef;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      margin: 10px 0;
+    }
+    .scores {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+    .score-box {
+      background: #bbada0;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .container {
+      background: #bbada0;
+      padding: 15px;
+      border-radius: 10px;
+      touch-action: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
+      gap: 10px;
+    }
+    .cell {
+      background: #cdc1b4;
+      border-radius: 5px;
+      font-size: 22px;
+      color: #776e65;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+    }
+    .tile-2 { background: #eee4da; }
+    .tile-4 { background: #ede0c8; }
+    .tile-8 { background: #f2b179; color: #f9f6f2; }
+    .tile-16 { background: #f59563; color: #f9f6f2; }
+    .tile-32 { background: #f67c5f; color: #f9f6f2; }
+    .tile-64 { background: #f65e3b; color: #f9f6f2; }
+    .tile-128 { background: #edcf72; color: #f9f6f2; }
+    .tile-256 { background: #edcc61; color: #f9f6f2; }
+    .tile-512 { background: #edc850; color: #f9f6f2; }
+    .tile-1024 { background: #edc53f; color: #f9f6f2; }
+    .tile-2048 { background: #edc22e; color: #f9f6f2; }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #8f7a66;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #a3917c;
+    }
+  </style>
 </head>
-
 <body>
-	<h1>Kamu sedang offline!</h1>
-	<h3>Coba main game ini dulu:</h3>
-	<div id="game-area">
-		<p>Tebak angka antara 1 sampai 10!</p>
-		<input type="number" id="guess" min="1" max="10" />
-		<button onclick="checkGuess()">Tebak!</button>
-		<p id="result"></p>
-		<button onclick="resetGame()">Main Lagi</button>
-	</div>
-	<script>
-		let randomNumber = Math.floor(Math.random() * 10) + 1;
-		let attempts = 0;
+  <h1>2048 Offline</h1>
+  <div class="scores">
+    <div class="score-box">Score: <span id="score">0</span></div>
+    <div class="score-box">Best: <span id="best">0</span></div>
+  </div>
+  <div class="container" id="game-container">
+    <div class="grid" id="grid"></div>
+  </div>
+  <button onclick="createGrid()">Restart Game</button>
 
-		function checkGuess() {
-			const guess = parseInt(document.getElementById('guess').value);
-			attempts++;
-			if (guess === randomNumber) {
-				document.getElementById('result').textContent = `Benar! Kamu menebak dalam ${attempts} percobaan.`;
-			} else if (guess < randomNumber) {
-				document.getElementById('result').textContent = 'Terlalu kecil!';
-			} else if (guess > randomNumber) {
-				document.getElementById('result').textContent = 'Terlalu besar!';
-			} else {
-				document.getElementById('result').textContent = 'Masukkan angka yang valid!';
-			}
-		}
+  <script>
+    const grid = document.getElementById("grid");
+    const size = 4;
+    let cells = [], score = 0, best = 0;
 
-		function resetGame() {
-			randomNumber = Math.floor(Math.random() * 10) + 1;
-			attempts = 0;
-			document.getElementById('guess').value = '';
-			document.getElementById('result').textContent = '';
-		}
-	</script>
+    if (localStorage.getItem("best2048")) {
+      best = parseInt(localStorage.getItem("best2048"));
+      document.getElementById("best").textContent = best;
+    }
+
+    function createGrid() {
+      cells = [];
+      grid.innerHTML = "";
+      score = 0;
+      updateScore();
+      for (let i = 0; i < size * size; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.value = "0";
+        grid.appendChild(cell);
+        cells.push(cell);
+      }
+      addNumber();
+      addNumber();
+      updateUI();
+    }
+
+    function addNumber() {
+      let emptyCells = cells.filter(cell => cell.dataset.value == "0");
+      if (emptyCells.length === 0) return;
+      let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      randomCell.dataset.value = Math.random() > 0.9 ? "4" : "2";
+    }
+
+    function updateUI() {
+      cells.forEach(cell => {
+        const value = Number(cell.dataset.value);
+        cell.textContent = value > 0 ? value : "";
+        cell.className = "cell";
+        if (value) cell.classList.add("tile-" + value);
+      });
+    }
+
+    function getRow(index) {
+      return cells.slice(index * size, index * size + size);
+    }
+
+    function getColumn(index) {
+      let col = [];
+      for (let i = 0; i < size; i++) col.push(cells[i * size + index]);
+      return col;
+    }
+
+    function slide(row) {
+      let values = row.map(cell => Number(cell.dataset.value)).filter(val => val);
+      for (let i = 0; i < values.length - 1; i++) {
+        if (values[i] === values[i + 1]) {
+          values[i] *= 2;
+          score += values[i];
+          values[i + 1] = 0;
+        }
+      }
+      values = values.filter(val => val);
+      while (values.length < size) values.push(0);
+      return values;
+    }
+
+    function handleMove(direction) {
+      let moved = false;
+      for (let i = 0; i < size; i++) {
+        let line = direction === "left" || direction === "right" ? getRow(i) : getColumn(i);
+        let values = line.map(cell => Number(cell.dataset.value));
+        if (direction === "right" || direction === "down") values.reverse();
+        const newValues = slide(values.map(v => ({ dataset: { value: v } })));
+        if (direction === "right" || direction === "down") newValues.reverse();
+        for (let j = 0; j < size; j++) {
+          if (line[j].dataset.value != newValues[j]) {
+            line[j].dataset.value = newValues[j];
+            moved = true;
+          }
+        }
+      }
+      if (moved) {
+        addNumber();
+        updateUI();
+        updateScore();
+      }
+    }
+
+    function updateScore() {
+      document.getElementById("score").textContent = score;
+      if (score > best) {
+        best = score;
+        document.getElementById("best").textContent = best;
+        localStorage.setItem("best2048", best);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "ArrowLeft": handleMove("left"); break;
+        case "ArrowRight": handleMove("right"); break;
+        case "ArrowUp": handleMove("up"); break;
+        case "ArrowDown": handleMove("down"); break;
+      }
+    });
+
+    // Swipe Gesture for Mobile
+    let startX = 0, startY = 0;
+    const container = document.getElementById("game-container");
+
+    container.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+    });
+
+    container.addEventListener("touchend", (e) => {
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 30) handleMove("right");
+        else if (dx < -30) handleMove("left");
+      } else {
+        if (dy > 30) handleMove("down");
+        else if (dy < -30) handleMove("up");
+      }
+    });
+
+    createGrid();
+  </script>
 </body>
-
 </html>
